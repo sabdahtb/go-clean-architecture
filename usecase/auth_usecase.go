@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"gorm.io/gorm"
 	"sabda.go/learn/domain"
 )
 
@@ -23,4 +24,8 @@ func (lu *authUsecase) GetUserByEmail(c context.Context, email string) (domain.U
 	ctx, cancel := context.WithTimeout(c, lu.contextTimeout)
 	defer cancel()
 	return lu.authRepository.GetByEmail(ctx, email)
+}
+
+func (lu *authUsecase) CreateAccessToken(c context.Context, db *gorm.DB, user *domain.User) (accessToken string, err error) {
+	return lu.authRepository.Create(c, db, user)
 }

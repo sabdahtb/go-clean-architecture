@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"sabda.go/learn/domain"
 )
 
 func NewPostgreeDatabase(env *Env) *gorm.DB {
@@ -23,6 +24,9 @@ func NewPostgreeDatabase(env *Env) *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.AutoMigrate(&domain.UserModel{})
+	db.AutoMigrate(&domain.Product{})
 
 	return db
 }

@@ -2,6 +2,9 @@ package domain
 
 import (
 	"context"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 const (
@@ -9,18 +12,27 @@ const (
 )
 
 type User struct {
-	Name     string `bson:"name"`
-	Email    string `bson:"email"`
-	Password string `bson:"password"`
+	Name     string
+	Email    string
+	Password string
+}
+
+type UserModel struct {
+	ID        uint `gorm:"primaryKey"`
+	Name      string
+	Email     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type AuthRepository interface {
-	// Create(c context.Context, user *User) error
+	Create(c context.Context, db *gorm.DB, user *User) (accessToken string, err error)
 	GetByEmail(c context.Context, email string) (User, error)
 }
 
 type AuthUsecase interface {
 	GetUserByEmail(c context.Context, email string) (User, error)
-	// CreateAccessToken(user *User, secret string, expiry int) (accessToken string, err error)
+	CreateAccessToken(c context.Context, db *gorm.DB, user *User) (accessToken string, err error)
 	// CreateRefreshToken(user *User, secret string, expiry int) (refreshToken string, err error)
 }
